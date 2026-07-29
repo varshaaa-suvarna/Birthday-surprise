@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Surprise For You 🐾</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- floating hearts / ambient decor, filled by script.js -->
+<div id="ambient-layer"></div>
+
+<!-- ============================================================
+     SCENE 0 — LOADING
+============================================================ -->
+<section id="scene-loading" class="scene active">
+  <div class="loader-pup">🐶</div>
+  <p class="loading-text">Preparing a surprise<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></p>
+  <div class="loading-bar-track"><div class="loading-bar-fill" id="loading-bar"></div></div>
+</section>
+
+<!-- ============================================================
+     SCENE 1 — PASSWORD
+============================================================ -->
+<section id="scene-password" class="scene">
+  <div class="glass-card">
+    <div class="tape"></div>
+    <span class="mega-emoji">💖💥</span>
+    <h2>Enter the password to unlock your surprise ❤️</h2>
+    <input type="password" id="password-input" class="password-input" placeholder="Type the password...">
+    <div>
+      <button class="btn" id="password-submit">Continue</button>
+    </div>
+    <p class="hint-text" id="password-hint">&nbsp;</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 2 — WELCOME
+============================================================ -->
+<section id="scene-welcome" class="scene">
+  <div class="glass-card">
+    <div class="tape"></div>
+    <span class="mega-emoji">😁🫶</span>
+    <h1 id="welcome-heading"></h1>
+    <div>
+      <button class="btn" id="welcome-yes"></button>
+      <button class="btn secondary" id="welcome-no"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 3 — NO PATH
+============================================================ -->
+<section id="scene-no" class="scene">
+  <div class="glass-card">
+    <span class="mega-emoji">😡</span>
+    <h2 id="no-text"></h2>
+    <button class="btn ghost" id="no-back-btn"></button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 4 — YES PATH
+============================================================ -->
+<section id="scene-yes" class="scene">
+  <div class="glass-card">
+    <span class="mega-emoji">😻💕</span>
+    <div class="heart-burst" id="heart-burst"></div>
+    <h2 id="yes-text"></h2>
+    <button class="btn" id="yes-continue-btn"></button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 5 — BIRTHDAY REVEAL
+============================================================ -->
+<section id="scene-birthday" class="scene">
+  <div class="hb-letters" id="hb-letters"></div>
+  <p class="hb-subtitle" id="hb-subtitle"></p>
+  <figure class="polaroid">
+    <img id="hb-photo" src="vaish.jpg" alt="Friend's photo" onerror="this.src='';this.style.display='flex';this.alt='📷 add images/friend-photo.jpg';this.style.alignItems='center';this.style.justifyContent='center';this.style.fontSize='13px';this.style.color='#7C4FBF';this.style.textAlign='center';this.style.padding='10px';">
+    <figcaption id="hb-caption">🎉</figcaption>
+  </figure>
+  <div class="cake">🎂🎉</div>
+  <button class="btn" id="birthday-next-btn">See our memories →</button>
+</section>
+
+<!-- ============================================================
+     SCENE 6 — MEMORIES / GALLERY
+============================================================ -->
+<section id="scene-memories" class="scene">
+  <div class="memories-wrap">
+    <h2>Memories ❤️</h2>
+    <div class="search-bar">
+      <span class="paw">🔍</span>
+      <input type="text" id="gallery-search" placeholder="Moments of us ❤️">
+    </div>
+    <div class="gallery-grid" id="gallery-grid"></div>
+    <div class="next-arrow-wrap">
+      <button class="btn" id="memories-next-btn">Next →</button>
+    </div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close">&times;</button>
+  <img id="lightbox-img" src="" alt="Memory">
+</div>
+
+<!-- ============================================================
+     SCENE 7 — TIMELINE
+============================================================ -->
+<section id="scene-timeline" class="scene">
+  <div class="timeline-wrap">
+    <h2>Our Story So Far 🐾</h2>
+    <div class="timeline-list" id="timeline-list"></div>
+    <div class="next-arrow-wrap">
+      <button class="btn" id="timeline-next-btn">Next →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 8 — REASONS (FLIP CARDS)
+============================================================ -->
+<section id="scene-reasons" class="scene">
+  <div class="reasons-wrap">
+    <h2>Reasons You're Amazing ✨</h2>
+    <div class="flip-grid" id="flip-grid"></div>
+    <div class="next-arrow-wrap">
+      <button class="btn" id="reasons-next-btn">Next →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 9 — MUSIC PLAYER
+============================================================ -->
+<section id="scene-music" class="scene">
+  <div class="glass-card">
+    <div class="tape"></div>
+    <div class="cassette" id="cassette">
+      <div class="reel"></div>
+      <div class="reel"></div>
+    </div>
+    <div class="song-meta">
+      <div class="title" id="song-title"></div>
+      <div class="artist" id="song-artist"></div>
+    </div>
+    <div class="player-controls">
+      <button class="play-btn" id="play-btn">▶</button>
+    </div>
+    <div class="progress-track" id="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="lyrics-box" id="lyrics-box"></div>
+    <audio id="audio-player" src="music/song.mp3"></audio>
+    <button class="btn secondary" id="music-next-btn">Next →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 10 — ENVELOPE
+============================================================ -->
+<section id="scene-envelope" class="scene">
+  <div class="glass-card">
+    <p style="margin-bottom:18px; font-family:var(--font-display); font-size:24px; color:var(--deep-purple);">One more thing for you...</p>
+    <div class="envelope" id="envelope">
+      <div class="envelope-flap"></div>
+      <div class="envelope-heart">❤️</div>
+      <div class="envelope-body"></div>
+    </div>
+    <p style="font-size:13px; opacity:0.7; margin-top:10px;">(tap the envelope)</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 11 — LETTER
+============================================================ -->
+<section id="scene-letter" class="scene">
+  <div class="letter-paper" id="letter-paper"></div>
+  <button class="btn" id="letter-next-btn" style="margin-top:20px; display:none;">Next →</button>
+</section>
+
+<!-- ============================================================
+     SCENE 12 — WISHES WALL
+============================================================ -->
+<section id="scene-wishes" class="scene">
+  <div class="wishes-wrap">
+    <h2>Wishes Wall 💌</h2>
+    <div class="wishes-grid" id="wishes-grid"></div>
+    <div class="next-arrow-wrap">
+      <button class="btn" id="wishes-next-btn">One last surprise →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 13 — FINAL SURPRISE
+============================================================ -->
+<section id="scene-final" class="scene">
+  <div class="glass-card">
+    <span class="mega-emoji">🐶🎆</span>
+    <h1 id="final-heading"></h1>
+    <p id="final-body"></p>
+    <button class="btn secondary" id="replay-btn"></button>
+  </div>
+</section>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
