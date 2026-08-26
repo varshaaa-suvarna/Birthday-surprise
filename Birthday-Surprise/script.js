@@ -23,13 +23,17 @@ function goTo(name) {
 function onSceneEnter(name) {
   if (name === 'timeline') observeTimelineItems();
   if (name === 'letter') startLetterTyping();
+  if (name === 'memories' && !galleryRendered) {
+    galleryRendered = true;
+    renderGallery();
+  }
 }
 
 /* ---------------------------------------------------------
    1. AMBIENT LAYER — floating hearts + cursor sparkle
 --------------------------------------------------------- */
 const ambientLayer = document.getElementById('ambient-layer');
-const floatEmojis = ['💜', '💛', '🌸', '✨', '🐾'];
+const floatEmojis = ['💜', '💛', '🌸', '✨', '🌺'];
 
 function spawnFloaty() {
   const el = document.createElement('span');
@@ -77,7 +81,7 @@ function checkPassword() {
     card.classList.remove('shake');
     void card.offsetWidth; // restart animation
     card.classList.add('shake');
-    passwordHint.textContent = 'Not quite... try again 🐾';
+    passwordHint.textContent = 'Not quite... try again 🌸';
   }
 }
 document.getElementById('password-submit').addEventListener('click', checkPassword);
@@ -182,20 +186,44 @@ document.getElementById('birthday-next-btn').addEventListener('click', () => goT
    6. MEMORIES / GALLERY SCENE
 --------------------------------------------------------- */
 const galleryGrid = document.getElementById('gallery-grid');
+const memoriesNextBtn = document.getElementById('memories-next-btn');
+
+// Hide Next button until all images are shown
+memoriesNextBtn.style.opacity = '0';
+memoriesNextBtn.style.pointerEvents = 'none';
+
+let galleryRendered = false;
+
 function renderGallery(filter = '') {
   galleryGrid.innerHTML = '';
-  CONFIG.memories.images
-    .filter(img => img.caption.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(img => {
-      const fig = document.createElement('figure');
-      fig.innerHTML = `<img src="${img.src}" alt="${img.caption}" loading="lazy" onerror="this.alt='📷 add ${img.src}'">
-                        <figcaption>${img.caption}</figcaption>`;
-      fig.addEventListener('click', () => openLightbox(img.src, img.caption));
-      galleryGrid.appendChild(fig);
-    });
+  const imgs = CONFIG.memories.images
+    .filter(img => img.caption.toLowerCase().includes(filter.toLowerCase()));
+
+  imgs.forEach((img, index) => {
+    const fig = document.createElement('figure');
+    fig.innerHTML = `<img src="${img.src}" alt="${img.caption}" loading="lazy" onerror="this.alt='📷 ${img.src}'">
+                      <figcaption>${img.caption}</figcaption>`;
+    fig.addEventListener('click', () => openLightbox(img.src, img.caption));
+    galleryGrid.appendChild(fig);
+
+    // Stagger each image appearing one by one
+    setTimeout(() => {
+      fig.classList.add('slide-in');
+
+      // Show Next button after the last image appears
+      if (index === imgs.length - 1) {
+        setTimeout(() => {
+          memoriesNextBtn.style.transition = 'opacity 0.6s ease';
+          memoriesNextBtn.style.opacity = '1';
+          memoriesNextBtn.style.pointerEvents = 'auto';
+        }, 800);
+      }
+    }, index * 900); // each image appears 900ms after the previous
+  });
 }
-renderGallery();
+
 document.getElementById('gallery-search').addEventListener('input', (e) => renderGallery(e.target.value));
+
 
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
@@ -265,9 +293,21 @@ const lyricsBox = document.getElementById('lyrics-box');
 
 playBtn.addEventListener('click', () => {
   if (audio.paused) {
-    audio.play().catch(() => { lyricsBox.textContent = 'Add your song file to /music to hear it play 🎵'; });
-    playBtn.textContent = '⏸';
-    cassette.classList.add('playing');
+    if (!audio.src || audio.src.endsWith('music/')) {
+      audio.src = CONFIG.music.src;
+    }
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        playBtn.textContent = '⏸';
+        cassette.classList.add('playing');
+      }).catch(err => {
+        console.error('Audio play failed:', err);
+        playBtn.textContent = '▶';
+        cassette.classList.remove('playing');
+        lyricsBox.textContent = 'Tap again to play audio 🎵';
+      });
+    }
   } else {
     audio.pause();
     playBtn.textContent = '▶';
